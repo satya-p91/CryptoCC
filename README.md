@@ -85,6 +85,6 @@ then import table data from bitcoin_txn_data.csv with following command:
 --file bitcoin_txn_data.csv --workers 4 --copy-options "CSV"`
 
 
-###Generate Build:
+### Generate Build:
 To generate build of this project run command: `./mvnw clean package`
 
