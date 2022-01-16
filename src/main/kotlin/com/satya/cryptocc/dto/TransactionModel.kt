@@ -1,4 +1,3 @@
 package com.satya.cryptocc.dto
 
-class AddTxn {
-}
+data class TransactionModel (var datetime: String, var amount: Double)
