@@ -1,5 +1,6 @@
 package com.satya.cryptocc.controller
 
+import com.satya.cryptocc.dto.DateIntervalModel
 import com.satya.cryptocc.dto.TransactionModel
 import com.satya.cryptocc.service.BitcoinService
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,6 +41,37 @@ class BitcoinController {
             resp["message"] = if (success) "Transaction inserted successfully!" else "Failed to insert this transaction"
             resp
         }catch (e: Exception){
+            e.printStackTrace()
+            resp["success"] = false
+            resp["message"] = e.localizedMessage
+            resp
+        }
+    }
+
+    @PostMapping("/getTotalAssetsBetweenInterval")
+    fun getTotalAssetsBetweenInterval(@RequestBody req: DateIntervalModel): Map<String, Any?>{
+        val resp = mutableMapOf<String,Any?>()
+
+        val (success, newDate) = btcService.validateDateTime(req.startDateTime)
+        val (success1, newDate1) = btcService.validateDateTime(req.endDateTime)
+        if(!success || !success1){
+            resp["success"] = false
+            resp["message"] = "Datetime not parsable, kindly provide date in format: 2022-01-13T01:40:00+01:30"
+            return  resp
+        }
+        newDate?.let {
+            req.startDateTime = newDate
+        }
+        newDate1?.let {
+            req.endDateTime = newDate1
+        }
+
+        return try {
+            val data = btcService.getTotalAmtBetween(req.startDateTime, req.endDateTime)
+            resp["success"] = true
+            resp["data"] = data
+            resp
+        }catch (e : Exception){
             e.printStackTrace()
             resp["success"] = false
             resp["message"] = e.localizedMessage
